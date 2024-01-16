@@ -1,0 +1,172 @@
+# QuizViz 
+###Quiz Creator and Taker app
+
+# Site Map
+
+- Home
+  - Welcome
+  - Sign Up
+  - Log In
+- Dashboard (Quiz Creator)
+  - Create Quiz
+    - Quiz Details
+    - Add Questions
+      - Question Type (Multiple Choice, Single Choice, etc.)
+      - Options
+      - Correct Answers
+  - My Quizzes
+    - Quiz List
+      - Quiz Details
+      - Edit Quiz
+      - Delete Quiz
+  - Leaderboard Management
+    - Create Group Leaderboard
+    - View/Edit Group Leaderboards
+- Dashboard (Quiz Taker)
+  - Available Quizzes
+    - Quiz List
+      - Start Quiz
+      - View Results
+  - My Quizzes
+    - Taken Quizzes
+      - View Results
+- Email Notifications
+  - Send Quiz Results
+- Class Management
+  - Create Class
+    - Class Details
+    - Add Students
+  - My Classes
+    - Class List
+      - Class Details
+      - Edit Class
+      - Delete Class
+- Gamification
+  - Badges
+    - Badge List
+      - Badge Details
+      - Edit Badge
+      - Delete Badge
+- User Profile
+  - View Profile
+  - Edit Profile
+- Logout
+
+
+## Database "PostgreSQL"
+A powerful open-source relational database that supports complex queries and is suitable for applications with various relationships like yours. It's widely used and has good support for JSON data types, which can be useful for storing flexible quiz structures.
+
+## Database Schema
+
+User Table:
+-UserID (Primary Key)
+-Username
+-Email
+-Password
+-UserType (Quiz Creator or Quiz Taker)
+
+Quiz Table:
+-QuizID (Primary Key)
+-CreatorID (Foreign Key referencing User.UserID)
+-Title
+-Description
+-TimeLimit
+-IsGroupQuiz (Boolean for group quiz)
+
+Question Table:
+-QuestionID (Primary Key)
+-QuizID (Foreign Key referencing Quiz.QuizID)
+-Text
+-Type (Multiple Choice, Single Choice, etc.)
+
+Option Table:
+-OptionID (Primary Key)
+-QuestionID (Foreign Key referencing Question.QuestionID)
+-Text
+
+Answer Table:
+-AnswerID (Primary Key)
+-QuestionID (Foreign Key referencing Question.QuestionID)
+-OptionID (Foreign Key referencing Option.OptionID)
+
+Result Table:
+-ResultID (Primary Key)
+-QuizID (Foreign Key referencing Quiz.QuizID)
+-UserID (Foreign Key referencing User.UserID)
+-Score
+-Timestamp
+
+Class Table:
+-ClassID (Primary Key)
+-ClassName
+-CreatorID (Foreign Key referencing User.UserID)
+
+ClassMember Table:
+-ClassMemberID (Primary Key)
+-ClassID (Foreign Key referencing Class.ClassID)
+-UserID (Foreign Key referencing User.UserID)
+
+Badge Table:
+-BadgeID (Primary Key)
+-Name
+-Description
+-ImageURL
+
+UserBadge Table:
+-UserBadgeID (Primary Key)
+-UserID (Foreign Key referencing User.UserID)
+-BadgeID (Foreign Key referencing Badge.BadgeID)
+-Timestamp
+
+## Database Relationships:
+
++ User creates many Quizzes.
++ Quiz has many Questions.
++ Question has many Options.
++ Quiz has many Results.
++ User can be a member of many Classes.
++ Class has many ClassMembers.
++ User can have many Badges.
++ Badge can be awarded to many Users.
+
+
+## ROUTES
+1>User Routes:
+	POST /api/users/signup: Create a new user account.
+	POST /api/users/login: Authenticate and log in a user.
+	GET /api/users/profile: Get user profile information.
+	PUT /api/users/profile: Update user profile information.
+	POST /api/users/logout: Log out the user.
+
+
+2>Quiz Routes:
+	GET /api/quizzes: Get a list of available quizzes for Quiz Takers.
+	GET /api/quizzes/:quizId: Get details of a specific quiz.
+	POST /api/quizzes/create: Create a new quiz.
+	PUT /api/quizzes/:quizId/edit: Update quiz details.
+	DELETE /api/quizzes/:quizId/delete: Delete a quiz.
+
+3>Question Routes:
+	GET /api/questions/:quizId: Get a list of questions for a specific quiz.
+	POST /api/questions/:quizId/create: Add a new question to a quiz.
+	PUT /api/questions/:questionId/edit: Update question details.
+	DELETE /api/questions/:questionId/delete: Delete a question.
+
+4>Result Routes:
+	GET /api/results/:quizId: Get the results of a specific quiz.
+	POST /api/results/submit/:quizId: Submit quiz answers and calculate results.
+	GET /api/results/user/:userId: Get a user's quiz results.
+
+5>Class Routes:
+	POST /api/classes/create: Create a new class.
+	GET /api/classes/:classId: Get details of a specific class.
+	PUT /api/classes/:classId/edit: Update class details.
+	DELETE /api/classes/:classId/delete: Delete a class.
+	GET /api/classes/:classId/members: Get members of a class.
+	POST /api/classes/:classId/add-member/:userId: Add a user to a class.
+
+6>Badge Routes:
+	GET /api/badges: Get a list of available badges.
+	GET /api/badges/:badgeId: Get details of a specific badge.
+	POST /api/badges/assign/:userId/:badgeId: Assign a badge to a user.
+	GET /api/badges/user/:userId: Get badges earned by a user.
