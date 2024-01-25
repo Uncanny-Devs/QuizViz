@@ -1,2 +1,2 @@
 # QuizViz 
-### Quiz Creator and Taker app
+### Quiz Creating and Taking app
